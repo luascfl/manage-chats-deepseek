@@ -6,37 +6,6 @@ const isSidebarActive = () => {
   return sidebarDiv && sidebarDiv.classList.contains("dc04ec1d") && !sidebarDiv.classList.contains("a02af2e6");
 };
 
-// Função para criar e exibir o modal com iframe
-const showFeedbackModal = () => {
-  const modal = document.createElement("div");
-  modal.style.position = "fixed";
-  modal.style.top = "0";
-  modal.style.left = "0";
-  modal.style.width = "100%";
-  modal.style.height = "100%";
-  modal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-  modal.style.display = "flex";
-  modal.style.justifyContent = "center";
-  modal.style.alignItems = "center";
-  modal.style.zIndex = "10000";
-
-  const iframe = document.createElement("iframe");
-  iframe.src = "https://roktune.duckdns.org/leads/form?apiKey=cb8455b00f1ac6b9b76a5d55074dc360";
-  iframe.style.width = "50%";
-  iframe.style.height = "80%";
-  iframe.style.border = "none";
-  iframe.style.borderRadius = "8px";
-
-  modal.appendChild(iframe);
-
-  // Fechar modal ao clicar fora do iframe
-  modal.addEventListener("click", () => {
-    document.body.removeChild(modal);
-  });
-
-  document.body.appendChild(modal);
-};
-
 export const addCustomControls = () => {
   if (isSidebarActive()) {
     const targetDiv = document.querySelector("#root > div > div.c3ecdb44 > div.dc04ec1d > div.b8812f16.a2f3d50e");
@@ -57,15 +26,6 @@ export const addCustomControls = () => {
         controlsContainer.style.margin = "10px 0";
         controlsContainer.style.marginLeft = "4%";
         controlsContainer.style.marginTop = "-10px";
-
-        // Botão de suporte (fica em sua própria linha)
-        const supportButton = document.createElement('a');
-        supportButton.href = 'https://roktune.duckdns.org/leads/form?apiKey=cb8455b00f1ac6b9b76a5d55074dc360';
-        supportButton.target = '_blank';
-        supportButton.style.color = 'rgba(154, 154, 154, 0.5)';
-        supportButton.innerText = 'Send us a feedback';
-        supportButton.style.textDecoration = 'none';
-        supportButton.style.marginBottom = '0px'; // espaçamento inferior
 
         // Cria um container para agrupar o texto "Multi select action" e o toggle na mesma linha
         const actionContainer = document.createElement("div");
@@ -117,14 +77,11 @@ export const addCustomControls = () => {
         toggleButton.appendChild(toggleInput);
         toggleButton.appendChild(toggleSlider);
 
-        // Contador de cliques no toggle
-        let clickCount = 0;
-
         // Ao mudar o estado do toggle, carrega dinamicamente e chama toggleCheckboxes
         toggleInput.addEventListener("change", async () => {
           const { toggleCheckboxes } = await import(chrome.runtime.getURL('modules/toggleCheckboxes.js'));
           const { manageSelectNonPriority } = await import(chrome.runtime.getURL('modules/manageSelectNonPriority.js'));
-          
+
           if (toggleInput.checked) {
             toggleSlider.style.backgroundColor = "#4caf50";
             toggleCircle.style.transform = "translateX(20px)";
@@ -136,14 +93,6 @@ export const addCustomControls = () => {
             toggleCheckboxes(false);
             manageSelectNonPriority(false);
           }
-
-          // Incrementa o contador de cliques
-          clickCount++;
-
-          // Se o usuário clicou 3 vezes, exibe o modal de feedback
-          if (clickCount === 5) {
-            showFeedbackModal();
-          }
         });
 
         // Adiciona o texto e o toggle ao container de ação (mesma linha)
@@ -151,7 +100,6 @@ export const addCustomControls = () => {
         actionContainer.appendChild(toggleButton);
 
         // Adiciona os elementos ao container principal
-        controlsContainer.appendChild(supportButton); // Botão de suporte (em linha separada)
         controlsContainer.appendChild(actionContainer); // Linha com Multi select action + toggle
 
         // Insere o container na div alvo (na posição desejada)
